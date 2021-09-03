@@ -4,7 +4,7 @@ local function GetURL(scripturl)
 	if shared.VapeDeveloper then
 		return readfile("vape/"..scripturl)
 	else
-		return game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..scripturl, true)
+		return game:HttpGet("https://raw.githubusercontent.com/0W0Pumpkin/VapeV4ForRoblox/main/"..scripturl, true)
 	end
 end
 if identifyexecutor and identifyexecutor() == "WeAreDevs" then
@@ -16,7 +16,7 @@ local request = syn and syn.request or http and http.request or http_request or 
 
 local function checkpublicrepo(id)
 	local req = request({
-		Url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/CustomModules/"..id..".vape",
+		Url = "https://raw.githubusercontent.com/0W0Pumpkin/VapeV4ForRoblox/main/CustomModules/"..id..".vape",
 		Method = "GET"
 	})
 	if req.StatusCode == 200 then
@@ -55,7 +55,7 @@ local GuiLibrary = loadstring(GetURL("NewGuiLibrary.lua"))()
 local function getcustomassetfunc(path)
 	if not isfile(path) then
 		local req = request({
-			Url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..path:gsub("vape/assets", "assets"),
+			Url = "https://raw.githubusercontent.com/0W0Pumpkin/VapeV4ForRoblox/main/"..path:gsub("vape/assets", "assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
