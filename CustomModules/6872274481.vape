@@ -1321,7 +1321,7 @@ bedwars["Client"]:WaitFor("EntityDeathEvent"):andThen(function(p6)
 			if p7.fromEntity and p7.fromEntity == game.Players.LocalPlayer.Character then
 				local plr = game.Players:GetPlayerFromCharacter(p7.entityInstance)
 				if plr and plr.leaderstats.Bed.Value ~= "✅" and AutoToxicFinalKill["Enabled"] then
-					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("L "..(plr.DisplayName or plr.Name)..(AutoToxicWinStreak["Enabled"] and game.Players:GetPlayerFromCharacter(p7.entityInstance):GetAttribute("WinStreak") > 0 and " : "..game.Players:GetPlayerFromCharacter(p7.entityInstance):GetAttribute("WinStreak").." winstreak" or ""), "All")
+					game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I am Rainway "..(plr.DisplayName or plr.Name)..(AutoToxicWinStreak["Enabled"] and game.Players:GetPlayerFromCharacter(p7.entityInstance):GetAttribute("WinStreak") > 0 and " : "..game.Players:GetPlayerFromCharacter(p7.entityInstance):GetAttribute("WinStreak").." winstreak" or ""), "All")
 				end
 			end
 		end
