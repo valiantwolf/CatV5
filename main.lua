@@ -109,8 +109,8 @@ if not shared.VapeIndependent then
 	loadstring(downloadFile('catrewrite/games/universal.lua'), 'universal')()
 	if isfile('catrewrite/games/'..game.PlaceId..'.lua') and shared.VapeDeveloper then
 		loadstring(downloadFile('catrewrite/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
-		task.spawn(function()
-			loadstring(downloadFile('catrewrite/games/bedwars/continue.luau'), 'continue.luau')()
+		task.delay(0.1, function()
+			loadstring(downloadFile('catrewrite/games/bedwars/continue.luau'), 'bedwars/continue.luau')()
 		end)
 	else
 		if not shared.VapeDeveloper then
