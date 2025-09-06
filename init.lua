@@ -33,7 +33,7 @@ if not success or typeof(commitdata) ~= 'table' or commitdata.sha == nil then
 end
 
 if not developer and not isfile('catreset') then
-    pcall(delfolder, 'catrewrite')
+    --pcall(delfolder, 'catrewrite')
 end
 
 writefile('catreset', 'True')
@@ -112,6 +112,7 @@ if not shared.VapeDeveloper then
 		wipeFolder('catrewrite/guis')
 		wipeFolder('catrewrite/libraries')
 	end
+	makefolder('catrewrite/games/bedwars')
     writefile('catrewrite/cheaters.json', '{}')
 	writefile('catrewrite/profiles/commit.txt', commit)
 end
