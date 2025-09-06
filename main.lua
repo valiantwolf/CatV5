@@ -1,7 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 if shared.vape then shared.vape:Uninject() end
 
---shared.VapeDeveloper = true
 getgenv().run = task.spawn
 
 if identifyexecutor then
@@ -109,9 +108,6 @@ if not shared.VapeIndependent then
 	loadstring(downloadFile('catrewrite/games/universal.lua'), 'universal')()
 	if isfile('catrewrite/games/'..game.PlaceId..'.lua') and shared.VapeDeveloper then
 		loadstring(downloadFile('catrewrite/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
-		task.delay(0.1, function()
-			loadstring(downloadFile('catrewrite/games/bedwars/continue.luau'), 'bedwars/continue.luau')()
-		end)
 	else
 		if not shared.VapeDeveloper then
 			local suc, res = pcall(function()
@@ -122,6 +118,9 @@ if not shared.VapeIndependent then
 			end
 		end
 	end
+	task.delay(0.1, function()
+		loadstring(downloadFile('catrewrite/games/bedwars/continue.luau'), 'bedwars/continue.luau')()
+	end)
 	finishLoading()
 else
 	vape.Init = finishLoading
