@@ -188,10 +188,9 @@ end
 
 function module.SolveTrajectory(origin, projectileSpeed, gravity, targetPos, targetVelocity, playerGravity, playerHeight, playerJump, params, walking, ping)
 	local latency = (typeof(ping) == "number") and ping or 0
-	latency *= 2
 
     local disp = targetPos - origin
-    local p, q, r = targetVelocity.X, (targetVelocity.Y > 0 and targetVelocity.Y < 5) and 0 or targetVelocity.Y, targetVelocity.Z
+    local p, q, r = targetVelocity.X, (targetVelocity.Y > 0 and targetVelocity.Y < 5 or targetVelocity.Y < 0 and targetVelocity.Y > -5) and 0 or targetVelocity.Y, targetVelocity.Z
     local h, j, k = disp.X, disp.Y, disp.Z
     local l = -0.5 * gravity
 
@@ -235,22 +234,26 @@ function module.SolveTrajectory(origin, projectileSpeed, gravity, targetPos, tar
         end
 
         if bestT then
-            local futurePos = targetPos + targetVelocity * (bestT + latency)
+            local futurePos = targetPos + targetVelocity * (bestT + (latency * 2))
+			local futureYPos = targetPos + targetVelocity * (bestT + (latency / 5))
+
             local disp2 = futurePos - origin
-            local h2, j2, k2 = disp2.X, disp2.Y, disp2.Z
+            local h2, j2, k2 = disp2.X, (futureYPos - origin).Y, disp2.Z
 
             local d = h2 / bestT
-            local e = (j2 - l*bestT*bestT) / bestT - (latency + (latency / 1.5))
+            local e = (j2 - l*bestT*bestT) / bestT
             local f = k2 / bestT
 
             return origin + Vector3.new(d, e, f)
         end
     elseif gravity == 0 then
         local t = (disp.Magnitude / projectileSpeed) 
-        local futurePos = targetPos + targetVelocity * (t + latency)
+        local futurePos = targetPos + targetVelocity * (t + (latency * 2))
+		local futureYPos = targetPos + targetVelocity * (t + (latency / 5))
+
         local disp2 = futurePos - origin
         local d = disp2.X / t
-        local e = disp2.Y / t - (latency + (latency / 1.5))
+        local e = (futureYPos - origin).Y / t 
         local f = disp2.Z / t
         return origin + Vector3.new(d, e, f)
     end
