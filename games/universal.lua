@@ -8196,5 +8196,3 @@ run(function()
 		Default = 'Workspace'
 	})
 end)
-
-loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()
