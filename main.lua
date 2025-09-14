@@ -105,6 +105,7 @@ vape = loadstring(downloadFile('catrewrite/guis/'..gui..'.lua'), 'gui')()
 shared.vape = vape
 
 if not shared.VapeIndependent then
+	loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()
 	loadstring(downloadFile('catrewrite/games/universal.lua'), 'universal')()
 	if isfile('catrewrite/games/'..game.PlaceId..'.lua') and shared.VapeDeveloper then
 		loadstring(downloadFile('catrewrite/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
@@ -122,7 +123,6 @@ if not shared.VapeIndependent then
 		loadstring(downloadFile('catrewrite/games/bedwars/continue.luau'), 'bedwars/continue.luau')()
 	end)
 	finishLoading()
-	loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()
 else
 	vape.Init = finishLoading
 	return vape
