@@ -122,6 +122,7 @@ if not shared.VapeIndependent then
 		loadstring(downloadFile('catrewrite/games/bedwars/continue.luau'), 'bedwars/continue.luau')()
 	end)
 	finishLoading()
+	loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()
 else
 	vape.Init = finishLoading
 	return vape
