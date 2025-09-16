@@ -189,6 +189,7 @@ local response = serv.HttpService:JSONDecode(game:HttpGet('https://raw.githubuse
 
 local function getUserByHash(hash)
     for i,v in response.WhitelistedUsers do
+		if not v or typeof(v) ~= 'table' then continue end
         local hash1 = v.hash:lower():gsub(' ', '')
         local hash2 = hash:lower():gsub(' ', '')
         if hash1 == hash2 then
