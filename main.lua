@@ -1,7 +1,6 @@
 repeat task.wait() until game:IsLoaded()
 if shared.vape then shared.vape:Uninject() end
 
-shared.VapeDeveloper = true
 getgenv().run = task.spawn
 
 if identifyexecutor then
