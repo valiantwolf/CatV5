@@ -180,6 +180,10 @@ entitylib.EntityPosition = function(entitysettings)
 			return a.Magnitude < b.Magnitude
 		end)
 
+		table.sort(sortingTable, function(a, b)
+			return shared.vape.hackerTable[a] and not shared.vape.hackerTable[b]
+		end)
+
 		for _, v in sortingTable do
 			if entitysettings.Wallcheck then
 				if entitylib.Wallcheck(localPosition, v.Entity[entitysettings.Part].Position, entitysettings.Wallcheck) then continue end
@@ -210,6 +214,10 @@ entitylib.AllPosition = function(entitysettings)
 
 		table.sort(sortingTable, entitysettings.Sort or function(a, b)
 			return a.Magnitude < b.Magnitude
+		end)
+
+		table.sort(sortingTable, function(a, b)
+			return shared.vape.hackerTable[a] and not shared.vape.hackerTable[b]
 		end)
 
 		for _, v in sortingTable do

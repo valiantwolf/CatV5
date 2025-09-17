@@ -1449,6 +1449,7 @@ run(function()
 				CircleObject.Color = Color3.fromHSV(CircleColor.Hue, CircleColor.Sat, CircleColor.Value)
 				CircleObject.Position = vape.gui.AbsoluteSize / 2
 				CircleObject.Radius = Range.Value
+				CircleObject.Thickness = 0.1
 				CircleObject.NumSides = 100
 				CircleObject.Transparency = 1 - CircleTransparency.Value
 				CircleObject.Visible = SilentAim.Enabled and Mode.Value == 'Mouse'
@@ -4104,15 +4105,21 @@ run(function()
 						continue
 					end
 				end
+
+				local pos = ent.RootPart.Position
+
+				if table.find(shared.vape.hackerTable, ent.Player) and entitylib.isAlive then
+					pos = Vector3.new(pos.X, entitylib.character.RootPart.Position.Y, pos.Z)
+				end
 	
-				local rootPos, rootVis = gameCamera:WorldToViewportPoint(ent.RootPart.Position - Vector3.new(0, 0.5, 0))
+				local rootPos, rootVis = gameCamera:WorldToViewportPoint(pos - Vector3.new(0, 0.5, 0))
 				for _, obj in EntityESP do
 					obj.Visible = rootVis
 				end
 				if not rootVis then continue end
 	
-				local topPos = gameCamera:WorldToViewportPoint((CFrame.lookAlong(ent.RootPart.Position - Vector3.new(0, 0.5, 0), gameCamera.CFrame.LookVector) * CFrame.new(2, ent.HipHeight, 0)).p)
-				local bottomPos = gameCamera:WorldToViewportPoint((CFrame.lookAlong(ent.RootPart.Position - Vector3.new(0, 0.5, 0), gameCamera.CFrame.LookVector) * CFrame.new(-2, -ent.HipHeight - 1, 0)).p)
+				local topPos = gameCamera:WorldToViewportPoint((CFrame.lookAlong(pos - Vector3.new(0, 0.5, 0), gameCamera.CFrame.LookVector) * CFrame.new(2, ent.HipHeight, 0)).p)
+				local bottomPos = gameCamera:WorldToViewportPoint((CFrame.lookAlong(pos - Vector3.new(0, 0.5, 0), gameCamera.CFrame.LookVector) * CFrame.new(-2, -ent.HipHeight - 1, 0)).p)
 				local sizex, sizey = topPos.X - bottomPos.X, topPos.Y - bottomPos.Y
 				local posx, posy = (rootPos.X - sizex / 2),  ((rootPos.Y - sizey / 2))
 				EntityESP.Main.Position = Vector2.new(posx, posy) // 1
@@ -4155,20 +4162,26 @@ run(function()
 					end
 				end
 	
-				local _, rootVis = gameCamera:WorldToViewportPoint(ent.RootPart.Position)
+				local pos = ent.RootPart.Position
+
+				if table.find(shared.vape.hackerTable, ent.Player) and entitylib.isAlive then
+					pos = Vector3.new(pos.X, entitylib.character.RootPart.Position.Y, pos.Z)
+				end
+
+				local _, rootVis = gameCamera:WorldToViewportPoint(pos)
 				for _, obj in EntityESP do
 					obj.Visible = rootVis
 				end
 				if not rootVis then continue end
 	
-				local point1 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(1.5, ent.HipHeight, 1.5))
-				local point2 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(1.5, -ent.HipHeight, 1.5))
-				local point3 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(-1.5, ent.HipHeight, 1.5))
-				local point4 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(-1.5, -ent.HipHeight, 1.5))
-				local point5 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(1.5, ent.HipHeight, -1.5))
-				local point6 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(1.5, -ent.HipHeight, -1.5))
-				local point7 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(-1.5, ent.HipHeight, -1.5))
-				local point8 = ESPWorldToViewport(ent.RootPart.Position + Vector3.new(-1.5, -ent.HipHeight, -1.5))
+				local point1 = ESPWorldToViewport(pos + Vector3.new(1.5, ent.HipHeight, 1.5))
+				local point2 = ESPWorldToViewport(pos + Vector3.new(1.5, -ent.HipHeight, 1.5))
+				local point3 = ESPWorldToViewport(pos + Vector3.new(-1.5, ent.HipHeight, 1.5))
+				local point4 = ESPWorldToViewport(pos + Vector3.new(-1.5, -ent.HipHeight, 1.5))
+				local point5 = ESPWorldToViewport(pos + Vector3.new(1.5, ent.HipHeight, -1.5))
+				local point6 = ESPWorldToViewport(pos + Vector3.new(1.5, -ent.HipHeight, -1.5))
+				local point7 = ESPWorldToViewport(pos + Vector3.new(-1.5, ent.HipHeight, -1.5))
+				local point8 = ESPWorldToViewport(pos + Vector3.new(-1.5, -ent.HipHeight, -1.5))
 				EntityESP.Line1.From = point1
 				EntityESP.Line1.To = point2
 				EntityESP.Line2.From = point3
@@ -5447,9 +5460,7 @@ run(function()
 	})
 end)
 	
-task.spawn(function()
-	loadstring(downloadFile('catrewrite/libraries/whitelist.lua'), 'whitelist.lua')()
-end)
+loadstring(downloadFile('catrewrite/libraries/whitelist.lua'), 'whitelist.lua')()
 
 run(function()
 	local Search
@@ -8196,3 +8207,5 @@ run(function()
 		Default = 'Workspace'
 	})
 end)
+
+loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()

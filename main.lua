@@ -1,11 +1,8 @@
 repeat task.wait() until game:IsLoaded()
 if shared.vape then shared.vape:Uninject() end
 
-getgenv().run = spawn
-getgenv().os = table.clone(os)
-setreadonly(os, false)
-getgenv().os.clock = tick
-getrenv().os = getgenv().os
+shared.VapeDeveloper = true
+getgenv().run = task.spawn
 
 if identifyexecutor then
 	if table.find({'Argon', 'Wave'}, ({identifyexecutor()})[1]) then
@@ -64,16 +61,13 @@ local function finishLoading()
 		if (not teleportedServers) and (not shared.VapeIndependent) then
 			teleportedServers = true
 			local teleportScript = [[
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/main/init.lua'), 'init.lua')({
-					Developer = false
-				})
+				loadstring(game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/main/init.lua'), 'init.lua')()
 			]]
 			if getgenv().catvapedev then
-				teleportScript = [[
-					loadfile('catrewrite/init.lua', 'init.lua')({
-						Developer = true
-					})
-				]]
+				teleportScript = 'getgenv().catvapedev = true\n'.. teleportScript
+			end
+			if getgenv().closet then
+				teleportScript = 'getgenv().closet = true\n'.. teleportScript
 			end
 			if shared.VapeCustomProfile then
 				teleportScript = 'shared.VapeCustomProfile = "'..shared.VapeCustomProfile..'"\n'..teleportScript

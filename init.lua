@@ -1,9 +1,12 @@
 local license = ({...})[1] or {}
 local developer = getgenv().catvapedev or license.Developer or false
+local closet = getgenv().closet or license.Closet or false
 
 if license.User then
     getgenv().catuser = license.User
 end
+
+getgenv().setthreadidentity = nil --> not needed
 
 local cloneref = cloneref or function(ref) return ref end
 local gethui = gethui or function() return game:GetService('Players').LocalPlayer.PlayerGui end
@@ -13,7 +16,7 @@ downloader.Size = UDim2.new(1, 0, -0.08, 0)
 downloader.BackgroundTransparency = 1
 downloader.TextStrokeTransparency = 0
 downloader.TextSize = 20
-downloader.Text = 'Loading Cat Rewrite...'
+downloader.Text = 'Downloading Nothing.'
 downloader.TextColor3 = Color3.new(1, 1, 1)
 downloader.Font = Enum.Font.Arial
 
@@ -30,10 +33,6 @@ end)
 
 if not success or typeof(commitdata) ~= 'table' or commitdata.sha == nil then
 	commitdata = {sha = 'main', files = {}}
-end
-
-if not developer and not isfile('catreset') then
-    --pcall(delfolder, 'catrewrite')
 end
 
 writefile('catreset', 'True')
@@ -74,7 +73,7 @@ local function wipeFolder(path)
 	end
 end 
 
-for _, folder in {'catrewrite', 'catrewrite/communication', 'catrewrite/games', 'catrewrite/profiles', 'catrewrite/assets', 'catrewrite/libraries', 'catrewrite/guis', 'catrewrite/games/bedwars'} do
+for _, folder in {'catrewrite', 'catrewrite/communication', 'catrewrite/games', 'catrewrite/games/bedwars', 'catrewrite/profiles', 'catrewrite/assets', 'catrewrite/libraries', 'catrewrite/libraries/Enviroments', 'catrewrite/guis'} do
 	if not isfolder(folder) then
 		makefolder(folder)
 	end
@@ -86,6 +85,7 @@ if not isfolder('catrewrite') or #listfiles('catrewrite') <= 6 or not isfolder('
     local req = httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/new-qwertyui/CatV5/contents/profiles'))
     for _, v in req do
         if v.path ~= 'profiles/commit.txt' then
+			downloader.Text = `Downloading catrewrite/{v.path}`
             downloadFile(`catrewrite/{v.path}`)
         end
     end
@@ -100,11 +100,27 @@ end
 shared.VapeDeveloper = developer
 getgenv().used_init = true
 getgenv().catvapedev = developer
+getgenv().closet = closet
+
+if closet then
+	task.spawn(function()
+		repeat
+			for _, v in getconnections(game:GetService('LogService').MessageOut) do
+				v:Disable()
+			end
+
+			for _, v in getconnections(game:GetService('ScriptContext').Error) do
+				v:Disable()
+			end
+
+			task.wait(0.5)
+		until not shared.VapeDeveloper or not getgenv().closet
+	end)
+end
+
+downloader.Text = 'Loading Cat Rewrite'
 
 if not shared.VapeDeveloper then
-	local _, subbed = pcall(function() 
-		return game:HttpGet('https://github.com/new-qwertyui/CatV5') 
-	end)
 	local commit = commitdata.sha or 'main'
 	if commit == 'main' or (isfile('catrewrite/profiles/commit.txt') and readfile('catrewrite/profiles/commit.txt') or '') ~= commit then
 		wipeFolder('catrewrite')
@@ -112,7 +128,6 @@ if not shared.VapeDeveloper then
 		wipeFolder('catrewrite/guis')
 		wipeFolder('catrewrite/libraries')
 	end
-	makefolder('catrewrite/games/bedwars')
     writefile('catrewrite/cheaters.json', '{}')
 	writefile('catrewrite/profiles/commit.txt', commit)
 end

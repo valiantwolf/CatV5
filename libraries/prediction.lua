@@ -190,7 +190,7 @@ function module.SolveTrajectory(origin, projectileSpeed, gravity, targetPos, tar
 	local latency = (typeof(ping) == "number") and ping or 0
 
     local disp = targetPos - origin
-    local p, q, r = targetVelocity.X, (targetVelocity.Y > 0 and targetVelocity.Y < 5 or targetVelocity.Y < 0 and targetVelocity.Y > -5) and 0 or targetVelocity.Y, targetVelocity.Z
+    local p, q, r = targetVelocity.X, (targetVelocity.Y > 0 and targetVelocity.Y < 5) and (0.1 + latency) or (targetVelocity.Y < 0 and targetVelocity.Y > -5) and 0.1 or targetVelocity.Y, targetVelocity.Z
     local h, j, k = disp.X, disp.Y, disp.Z
     local l = -0.5 * gravity
 

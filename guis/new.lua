@@ -5338,6 +5338,7 @@ end
 
 function mainapi:CreateNotification(title, text, duration, type, custom, customsize)
 	if not self.Notifications.Enabled then return end
+	if getgenv().closet then return end
 	task.delay(0, function()		
 		if not text:find('</font>') then
 			text = translateTo(text)
@@ -5532,7 +5533,7 @@ function mainapi:Load(skipgui, profile)
 			end
 			if v.Enabled ~= object.Enabled then
 				if skipgui then
-					if self.ToggleNotifications.Enabled then self:CreateNotification('Module Toggled', i.."<font color='#FFFFFF'> has been </font>"..(v.Enabled and "<font color='#5AFF5A'>Enabled</font>" or "<font color='#FF5A5A'>Disabled</font>").."<font color='#FFFFFF'>!</font>", 0.75) end
+					--if self.ToggleNotifications.Enabled then self:CreateNotification('Module Toggled', i.."<font color='#FFFFFF'> has been </font>"..(v.Enabled and "<font color='#5AFF5A'>Enabled</font>" or "<font color='#FF5A5A'>Disabled</font>").."<font color='#FFFFFF'>!</font>", 0.75) end
 				end
 				pcall(function()
 					object:Toggle(true)
@@ -5570,7 +5571,7 @@ function mainapi:Load(skipgui, profile)
 
 	--> ud code btw pls dontt get mad
 
-	if not inputService.KeyboardEnabled or catvapedev then
+	if not inputService.KeyboardEnabled then
 		if setthreadidentity then
 			setthreadidentity(8)
 		end
