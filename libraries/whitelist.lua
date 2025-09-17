@@ -1,5 +1,5 @@
 repeat task.wait() until game:IsLoaded()
-vape.Libraries.CatWhitelisted = true
+shared.vape.Libraries.CatWhitelisted = true
     
 task.delay(10, function()
     local serv = setmetatable({}, {
