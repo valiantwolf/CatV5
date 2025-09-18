@@ -104,6 +104,7 @@ shared.vape = vape
 if not shared.VapeIndependent then
 	loadstring(downloadFile('catrewrite/games/universal.lua'), 'universal')()
 	shared.vape.Libraries.Cat = true
+	loadstring(downloadFile('catrewrite/libraries/whitelist.lua'), 'whitelist.lua')()
 	if isfile('catrewrite/games/'..game.PlaceId..'.lua') and shared.VapeDeveloper then
 		loadstring(downloadFile('catrewrite/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
 	else

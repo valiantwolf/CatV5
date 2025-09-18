@@ -5460,8 +5460,6 @@ run(function()
 	})
 end)
 	
-loadstring(downloadFile('catrewrite/libraries/whitelist.lua'), 'whitelist.lua')()
-
 run(function()
 	local Search
 	local List
@@ -8207,3 +8205,5 @@ run(function()
 		Default = 'Workspace'
 	})
 end)
+
+loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()

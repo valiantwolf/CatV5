@@ -6,16 +6,14 @@ if license.User then
     getgenv().catuser = license.User
 end
 
-getgenv().setthreadidentity = nil --> not needed
-
 local cloneref = cloneref or function(ref) return ref end
 local gethui = gethui or function() return game:GetService('Players').LocalPlayer.PlayerGui end
 
 local downloader = Instance.new('TextLabel', Instance.new('ScreenGui', gethui()))
 downloader.Size = UDim2.new(1, 0, -0.08, 0)
 downloader.BackgroundTransparency = 1
-downloader.TextStrokeTransparency = 0
-downloader.TextSize = 20
+downloader.TextStrokeTransparency = closet and 1 or 0
+downloader.TextSize = closet and 0 or 20
 downloader.Text = 'Downloading Nothing.'
 downloader.TextColor3 = Color3.new(1, 1, 1)
 downloader.Font = Enum.Font.Arial
@@ -50,7 +48,9 @@ end
 local function downloadFile(path, func)
 	if not isfile(path) then
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/'..readfile('catrewrite/profiles/commit.txt')..'/'..select(1, path:gsub('catrewrite/', ''):gsub(' ', '%%20')), true)
+			local subbed = path:gsub('catrewrite/', '')
+			subbed = subbed:gsub(' ', '%%20')
+			return game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/'..readfile('catrewrite/profiles/commit.txt')..'/'..subbed, true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
@@ -132,6 +132,6 @@ if not shared.VapeDeveloper then
 	writefile('catrewrite/profiles/commit.txt', commit)
 end
 
-downloader:Destroy()
+loadstring(downloadFile('catrewrite/main.lua'), 'main')()
 
-return loadstring(downloadFile('catrewrite/main.lua'), 'main')()
+downloader:Destroy()
