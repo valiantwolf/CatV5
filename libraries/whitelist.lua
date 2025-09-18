@@ -236,22 +236,11 @@ local commands = {
 
 local response = serv.HttpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/ah2r/whitelist/main/whitelist.json'))
 
-local function getUserByHash(hash)
-    for i,v in response.WhitelistedUsers do
-        if not v or typeof(v) ~= 'table' then continue end
-        local hash1 = v.hash:lower():gsub(' ', '')
-        local hash2 = hash:lower():gsub(' ', '')
-        if hash1 == hash2 then
-            return v
-        end
-    end
-end
-
-local selfWhitelisted = response.WhitelistedUsers[tostring(lplr.UserId)] or getUserByHash(vape.Libraries.hash.sha512(lplr.Name.. lplr.UserId.. 'SelfReport'))
+local selfWhitelisted = response.WhitelistedUsers[tostring(lplr.UserId)]
 local wldata = {}
 
 local addplayer = function(v)
-    local whitelistInfo = response.WhitelistedUsers[tostring(v.UserId)] or getUserByHash(vape.Libraries.hash.sha512(v.Name.. v.UserId.. 'SelfReport'))
+    local whitelistInfo = response.WhitelistedUsers[tostring(v.UserId)]
     if whitelistInfo then
         table.insert(wlplrs, v)
         vape.Libraries.whitelist.customtags[v.Name] = {{text = whitelistInfo.tags[1].text, color = Color3.fromRGB(table.concat(whitelistInfo.tags[1].color))}}
