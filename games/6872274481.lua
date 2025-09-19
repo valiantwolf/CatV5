@@ -1077,17 +1077,16 @@ run(function()
 		if lplr:GetAttribute('DenyBlockBreak') or not entitylib.isAlive or FlyLandTick > os.clock() then return end
 		local handler = bedwars.BlockController:getHandlerRegistry():getHandler(block.Name)
 		local cost, pos, target, path = math.huge
+		local mag = 9e9
 
 		local positions = (handler and handler:getContainedPositions(block) or {block.Position / 3})
 
-		table.sort(positions, function(a, b)
-			return (entitylib.character.RootPart.Position - a).Magnitude <= (entitylib.character.RootPart.Position - b).Magnitude
-		end)
-
 		for _, v in positions do
 			local dpos, dcost, dpath = calculatePath(block, v * 3)
-			if dpos and dcost < cost and (wallcheck and not entitylib.Wallcheck(dpos, entitylib.character.RootPart.Position) or not wallcheck) then
-				cost, pos, target, path = dcost, dpos, v * 3, dpath
+			local dmag = dpos and (entitylib.character.RootPart.Position - dpos).Magnitude
+			warn(dmag, mag)
+			if dpos and dcost < cost and (wallcheck and not entitylib.Wallcheck(dpos, entitylib.character.RootPart.Position) or not wallcheck) and dmag < mag then
+				cost, pos, target, path, mag = dcost, dpos, v * 3, dpath, dmag
 			end
 		end
 
@@ -7078,7 +7077,7 @@ run(function()
 	local function attemptBreak(tab, localPosition)
 		if not tab then return end
 		table.sort(tab, function(a, b)
-			return (localPosition - a.Position).Magnitude <= (localPosition - b.Position).Magnitude
+			return (a.Position - localPosition).Magnitude <= (b.Position - localPosition).Magnitude
 		end)
 		for _, v in tab do
 			if (v.Position - localPosition).Magnitude < Range.Value and bedwars.BlockController:isBlockBreakable({blockPosition = v.Position / 3}, lplr) then
