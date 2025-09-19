@@ -117,9 +117,6 @@ if not shared.VapeIndependent then
 			end
 		end
 	end
-	task.delay(0.1, function()
-		loadstring(downloadFile('catrewrite/games/bedwars/continue.luau'), 'bedwars/continue.luau')()
-	end)
 	finishLoading()
 	loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()
 else

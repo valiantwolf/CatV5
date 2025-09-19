@@ -38,7 +38,7 @@ if identifyexecutor() == 'Seliware' then
 end
 
 local function downloadFile(path, func)
-	if not isfile(path) then
+	if not isfile(path) or not shared.VapeDeveloper then
 		local suc, res = pcall(function()
 			return game:HttpGet('https://raw.githubusercontent.com/qwertyui-is-back/CatV5/'..readfile('catrewrite/profiles/commit.txt')..'/'..select(1, path:gsub('catrewrite/', '')), true)
 		end)
@@ -8460,7 +8460,6 @@ run(function()
 	})
 end)
 
-warn('ragebait')
 loadstring(downloadFile('catrewrite/games/bedwars/modules.luau'), 'modules.luau')();
 
 InfiniteFly = vape.Modules['Infinite Fly']
