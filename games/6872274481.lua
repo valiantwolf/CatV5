@@ -1086,7 +1086,7 @@ run(function()
 
 		for _, v in positions do
 			local dpos, dcost, dpath = calculatePath(block, v * 3)
-			if dpos and dcost < cost and (wallcheck and entitylib.Wallcheck(entitylib.character.RootPart.Position, v, {}) or not wallcheck) then
+			if dpos and dcost < cost and (wallcheck and not entitylib.Wallcheck(dpos, entitylib.character.RootPart.Position) or not wallcheck) then
 				cost, pos, target, path = dcost, dpos, v * 3, dpath
 			end
 		end
