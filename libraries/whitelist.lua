@@ -223,6 +223,9 @@ local commands = {
         ball3.Color = tipColor
 
     end,
+    chat = function(...)
+        serv.TextChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(table.concat({...}, ' '))
+    end,
     crash = function()
         local sgui = Instance.new("ScreenGui", game.CoreGui)
         local frame = Instance.new("Frame", sgui)

@@ -9,11 +9,13 @@ end
 local cloneref = cloneref or function(ref) return ref end
 local gethui = gethui or function() return game:GetService('Players').LocalPlayer.PlayerGui end
 
+warn(closet)
+
 local downloader = Instance.new('TextLabel', Instance.new('ScreenGui', gethui()))
 downloader.Size = UDim2.new(1, 0, -0.08, 0)
 downloader.BackgroundTransparency = 1
 downloader.TextStrokeTransparency = 0
-downloader.TextSize = (closet and 0) or 20
+downloader.TextSize = (not closet and 20) or 0
 downloader.Text = 'Downloading Nothing.'
 downloader.TextColor3 = Color3.new(1, 1, 1)
 downloader.Font = Enum.Font.Arial

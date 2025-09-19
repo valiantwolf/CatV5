@@ -91,6 +91,7 @@ local store = {
 		},
 		hotbar = {}
 	},
+	contracts = {},
 	inventories = {},
 	matchState = 0,
 	queueType = 'bedwars_test',
@@ -783,7 +784,7 @@ end)
 entitylib.start()
 
 run(function()
-local KnitInit, Knit
+	local KnitInit, Knit
 	repeat
 		KnitInit, Knit = pcall(function()
 			return debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 9)
@@ -915,7 +916,8 @@ local KnitInit, Knit
 	}
 	
 	local preDumped = {
-		SummonerClawAttack = ''
+		SummonerClawAttack = 'SummonerClawAttackRequest',
+		EquipItem = 'SetInvItem'
 	}
 
 	local function dumpRemote(tab)
@@ -932,12 +934,13 @@ local KnitInit, Knit
 	for i, v in remoteNames do
 		local remote = dumpRemote(debug.getconstants(v))
 		if remote == '' then
-			notif('Vape', 'Failed to grab remote ('..i..')', 10, 'alert')
+			if not preDumped[i] or preDumped[i] == '' then
+				notif('Vape', 'Failed to grab remote ('..i..')', 10, 'alert')
+			end
+			remote = preDumped[i]
 		end
 		remotes[i] = remote
 	end
-
-
 	
 	repeat task.wait() until typeof(bedwars.BlockController.isBlockBreakable) == 'function'
 
@@ -1013,7 +1016,7 @@ local KnitInit, Knit
 		Source: https://stackoverflow.com/questions/39355587/speeding-up-dijkstras-algorithm-to-solve-a-3d-maze
 	]]
 	local function calculatePath(target, blockpos)
-		if cache[blockpos] then
+		if cache[blockpos] and cache[blockpos][4] > os.clock() then
 			return unpack(cache[blockpos])
 		end
 		local visited, unvisited, distances, air, path = {}, {{0, blockpos}}, {[blockpos] = 0}, {}, {}
@@ -1056,7 +1059,8 @@ local KnitInit, Knit
 			cache[blockpos] = {
 				pos,
 				cost,
-				path
+				path,
+				os.clock() + 1
 			}
 			return pos, cost, path
 		end
@@ -1238,6 +1242,11 @@ local KnitInit, Knit
 			id = select(4, ...),
 			projectileData = select(8, ...)
 		})
+	end))
+
+	vape:Clean(bedwars.Client:Get('BloodAssassinUpdateAvailableContracts'):Connect(function(const)
+		notif('Vape', 'Contract updated', 8, 'warning')
+		store.contracts = const.contracts
 	end))
 
 	for _, event in {'PlaceBlockEvent', 'BreakBlockEvent'} do
@@ -3580,6 +3589,7 @@ end)
 run(function()
 	local AutoKit
 	local Legit
+	local Range
 	local Toggles = {}
 	
 	local function kitCollection(id, func, range, specific)
@@ -3815,9 +3825,10 @@ run(function()
 			end, 20, false)
 		end,
 		summoner = function()
+			local clock = os.clock() - 0.85
 			repeat
 				local plr = entitylib.EntityPosition({
-					Range = 31,
+					Range = Legit.Enabled and Range.Value or 41,
 					Part = 'RootPart',
 					Players = true,
 					Sort = sortmethods.Health
@@ -3826,8 +3837,13 @@ run(function()
 				if plr and (not Legit.Enabled or (lplr.Character:GetAttribute('Health') or 0) > 0) then
 					local localPosition = entitylib.character.RootPart.Position
 					local shootDir = CFrame.lookAt(localPosition, plr.RootPart.Position).LookVector
-					localPosition += shootDir * math.max((localPosition - plr.RootPart.Position).Magnitude - 16, 0)
+					localPosition += shootDir * math.max((localPosition - plr.RootPart.Position).Magnitude - 18, 0)
 	
+					if (os.clock() - clock) >= 0.85 then
+						bedwars.SummonerClawController:clawAttack(lplr, localPosition, shootDir, store.hand.tool and store.hand.tool.Name or 'summoner_claw_1')
+						clock = os.clock()
+					end
+
 					bedwars.Client:Get(remotes.SummonerClawAttack):SendToServer({
 						position = localPosition,
 						direction = shootDir,
@@ -3877,6 +3893,23 @@ run(function()
 				end
 				task.wait(0.1)
 			until not AutoKit.Enabled
+		end,
+		blood_assassin = function()
+			AutoKit:Clean(vapeEvents.EntityDamageEvent.Event:Connect(function(damageTable)
+				if damageTable.fromEntity == lplr.Character and damageTable.entityInstance.Humanoid.Health < 30 then
+					local plr = playersService:GetPlayerFromCharacter(damageTable.entityInstance)
+					if plr then
+						for i,v in store.contracts do
+							if v.target == plr then
+								bedwars.Client:Get('BloodAssassinSelectContract'):SendToServer({
+									contractId = v.id
+								})
+								break
+							end
+						end
+					end
+				end
+			end))
 		end,
 		warlock = function()
 			local lastTarget
@@ -3938,7 +3971,21 @@ run(function()
 		end,
 		Tooltip = 'Automatically uses kit abilities.'
 	})
-	Legit = AutoKit:CreateToggle({Name = 'Legit Range'})
+	Legit = AutoKit:CreateToggle({
+		Name = 'Legit Range',
+		Function = function(call)
+			if Range then
+				Range.Object.Visible = call
+			end
+		end
+	})
+	Range = AutoKit:CreateSlider({
+		Name = 'Range',
+		Min = 1,
+		Max = 50,
+		Default = 35
+	})
+	Range.Object.Visible = false
 	local sortTable = {}
 	for i in AutoKitFunctions do
 		table.insert(sortTable, i)
@@ -6907,6 +6954,9 @@ end)
 	
 run(function()
 	local Breaker
+	local Delay
+	local AutoAim
+	local AimSpeed	
 	local Range
 	local UpdateRate
 	local Custom
@@ -7023,6 +7073,7 @@ run(function()
 	end
 	
 	local hit = 0
+	local targetting = nil
 	
 	local function attemptBreak(tab, localPosition)
 		if not tab then return end
@@ -7039,6 +7090,9 @@ run(function()
 				local target, path, endpos = bedwars.breakBlock(v, Effect.Enabled, Animation.Enabled, CustomHealth.Enabled and customHealthbar or nil, AutoTool.Enabled, WallCheck.Enabled)
 				if path then
 					local currentnode = target
+					if currentnode then
+						targetting = currentnode
+					end
 					for _, part in parts do
 						part.Position = currentnode or Vector3.zero
 						if currentnode then
@@ -7048,7 +7102,9 @@ run(function()
 					end
 				end
 	
-				task.wait(0.25)
+				task.wait(Delay.Value)
+
+				targetting = nil
 	
 				return true
 			end
@@ -7087,6 +7143,12 @@ run(function()
 					end
 				end)
 	
+				Breaker:Clean(runService.PreSimulation:Connect(function(dt)
+					if AutoAim.Enabled and targetting then
+						gameCamera.CFrame = gameCamera.CFrame:Lerp(CFrame.lookAt(gameCamera.CFrame.p, targetting), AimSpeed.Value * dt)
+					end
+				end))
+
 				repeat
 					task.wait(1 / UpdateRate.Value)
 					if not Breaker.Enabled then break end
@@ -7122,6 +7184,23 @@ run(function()
 			return val == 1 and 'stud' or 'studs'
 		end
 	})
+	Delay = Breaker:CreateSlider({
+		Name = 'Break Delay',
+		Min = 0,
+		Max = 0.3,
+		Default = 0.25,
+		Decimal = 5,
+		Suffix = function(val)
+			return 's'
+		end
+	})
+	AimSpeed = Breaker:CreateSlider({
+		Name = 'Aim Speed',
+		Min = 1,
+		Max = 20,
+		Default = 20
+	})
+	AimSpeed.Object.Visible = false
 	UpdateRate = Breaker:CreateSlider({
 		Name = 'Update rate',
 		Min = 1,
@@ -7144,6 +7223,11 @@ run(function()
 	Bed = Breaker:CreateToggle({
 		Name = 'Break Bed',
 		Default = true
+	})
+		Name = 'Auto Aim',
+		Function = function(call)
+			AimSpeed.Object.Visible = call
+		end
 	})
 	LuckyBlock = Breaker:CreateToggle({
 		Name = 'Break Lucky Block',

@@ -8206,4 +8206,4 @@ run(function()
 	})
 end)
 
-loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()
+--loadstring(downloadFile('catrewrite/libraries/update.lua'), 'update.lua')()
