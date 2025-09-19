@@ -234,7 +234,7 @@ function module.SolveTrajectory(origin, projectileSpeed, gravity, targetPos, tar
         end
 
         if bestT then
-            local futurePos = targetPos + targetVelocity * (bestT + (latency * 2))
+            local futurePos = targetPos + targetVelocity * (bestT + (latency * 1.1))
 			local futureYPos = targetPos + targetVelocity * (bestT + (latency / 5))
 
             local disp2 = futurePos - origin
@@ -248,7 +248,7 @@ function module.SolveTrajectory(origin, projectileSpeed, gravity, targetPos, tar
         end
     elseif gravity == 0 then
         local t = (disp.Magnitude / projectileSpeed) 
-        local futurePos = targetPos + targetVelocity * (t + (latency * 2))
+        local futurePos = targetPos + targetVelocity * (t + (latency * 1.1))
 		local futureYPos = targetPos + targetVelocity * (t + (latency / 5))
 
         local disp2 = futurePos - origin
