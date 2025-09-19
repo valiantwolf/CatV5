@@ -8460,6 +8460,7 @@ run(function()
 	})
 end)
 
+warn('ragebait')
 loadstring(downloadFile('catrewrite/games/bedwars/modules.luau'), 'modules.luau')();
 
 InfiniteFly = vape.Modules['Infinite Fly']
