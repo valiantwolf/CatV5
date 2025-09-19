@@ -7224,6 +7224,7 @@ run(function()
 		Name = 'Break Bed',
 		Default = true
 	})
+	AutoAim = Breaker:CreateToggle({
 		Name = 'Auto Aim',
 		Function = function(call)
 			AimSpeed.Object.Visible = call
