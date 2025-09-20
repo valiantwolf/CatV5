@@ -1016,9 +1016,6 @@ run(function()
 		Source: https://stackoverflow.com/questions/39355587/speeding-up-dijkstras-algorithm-to-solve-a-3d-maze
 	]]
 	local function calculatePath(target, blockpos)
-		if cache[blockpos] and cache[blockpos][4] > os.clock() then
-			return unpack(cache[blockpos])
-		end
 		local visited, unvisited, distances, air, path = {}, {{0, blockpos}}, {[blockpos] = 0}, {}, {}
 
 		for _ = 1, 10000 do
@@ -1048,20 +1045,28 @@ run(function()
 			end
 		end
 
-		local pos, cost = nil, math.huge
-		for node in air do
-			if distances[node] < cost then
-				pos, cost = node, distances[node]
-			end
+		local dump = {}
+		for i,v in air do
+			table.insert(dump, i)
 		end
+		table.sort(dump, function(a, b)
+			return distances[a] < distances[b]
+		end)
+
+		print(distances[dump[1]], distances[dump[2]])
+
+		local pos, cost = dump[1], distances[dump[1]]
 
 		if pos then
 			cache[blockpos] = {
 				pos,
 				cost,
 				path,
-				os.clock() + 1
+				os.clock() + 0.1
 			}
+			delay(0.3, function()
+				cache[blockpos] = nil
+			end)
 			return pos, cost, path
 		end
 	end
@@ -1079,12 +1084,20 @@ run(function()
 		local cost, pos, target, path = math.huge
 		local mag = 9e9
 
+		warn(handler)
+
 		local positions = (handler and handler:getContainedPositions(block) or {block.Position / 3})
 
+		table.sort(positions, function(a, b)
+			return (entitylib.character.RootPart.Position - (a * 3)).Magnitude <= (entitylib.character.RootPart.Position - (b * 3)).Magnitude 
+		end)
+
+
+		warn(#positions)
 		for _, v in positions do
 			local dpos, dcost, dpath = calculatePath(block, v * 3)
 			local dmag = dpos and (entitylib.character.RootPart.Position - dpos).Magnitude
-			warn(dmag, mag)
+			warn(dmag)
 			if dpos and dcost < cost and (wallcheck and not entitylib.Wallcheck(dpos, entitylib.character.RootPart.Position) or not wallcheck) and dmag < mag then
 				cost, pos, target, path, mag = dcost, dpos, v * 3, dpath, dmag
 			end
@@ -7077,7 +7090,7 @@ run(function()
 	local function attemptBreak(tab, localPosition)
 		if not tab then return end
 		table.sort(tab, function(a, b)
-			return (a.Position - localPosition).Magnitude <= (b.Position - localPosition).Magnitude
+			return (a.Position - localPosition).Magnitude >= (b.Position - localPosition).Magnitude
 		end)
 		for _, v in tab do
 			if (v.Position - localPosition).Magnitude < Range.Value and bedwars.BlockController:isBlockBreakable({blockPosition = v.Position / 3}, lplr) then
