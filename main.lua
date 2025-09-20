@@ -78,11 +78,13 @@ local function finishLoading()
 
 	if not shared.vapereload then
 		if not vape.Categories then return end
-		if vape.Categories.Main.Options['GUI bind indicator'].Enabled then
-			vape:CreateNotification('Finished Loading', vape.VapeButton and 'Press the button in the top right to open GUI' or 'Press '..table.concat(vape.Keybind, ' + '):upper()..' to open GUI', 5)
-			vape:CreateNotification('Cat', `Initialized as {catuser or 'Guest'}`, 8, 'alert')
-			vape:CreateNotification('Cat', 'We have a discord server! If theres any problems, please report them here: discord.gg/pVEB6qJh33', 13, 'alert')
-		end
+		pcall(function()
+			if vape.Categories.Main.Options['GUI bind indicator'].Enabled then
+				vape:CreateNotification('Finished Loading', vape.VapeButton and 'Press the button in the top right to open GUI' or 'Press '..table.concat(vape.Keybind, ' + '):upper()..' to open GUI', 5)
+				vape:CreateNotification('Cat', `Initialized as {(catuser or 'Guest')}`, 8, 'alert')
+				vape:CreateNotification('Cat', 'We have a discord server! If theres any problems, please report them here: discord.gg/pVEB6qJh33', 13, 'alert')
+			end
+		end)
 	end
 end
 
