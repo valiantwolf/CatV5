@@ -52,7 +52,7 @@ local function downloadFile(path, func)
 		local suc, res = pcall(function()
 			local subbed = path:gsub('catrewrite/', '')
 			subbed = subbed:gsub(' ', '%%20')
-			return game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/'..readfile('catrewrite/profiles/commit.txt')..'/'..subbed, true)
+			return game:HttpGet('https://raw.githubusercontent.com/valiantwolf/CatV5/'..readfile('catrewrite/profiles/commit.txt')..'/'..subbed, true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
