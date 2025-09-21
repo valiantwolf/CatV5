@@ -60,7 +60,9 @@ local function finishLoading()
 		if (not teleportedServers) and (not shared.VapeIndependent) then
 			teleportedServers = true
 			local teleportScript = [[
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/main/init.lua'), 'init.lua')()
+				delay(10, function()
+					loadstring(game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/main/init.lua'), 'init.lua')()
+				end)
 			]]
 			if getgenv().catvapedev then
 				teleportScript = 'getgenv().catvapedev = true\n'.. teleportScript
